@@ -71,6 +71,17 @@ export const stringify = (value, replacer, space) => {
   let firstRun = !i;
   while (i < input.length) {
     firstRun = true;
+    
+    // sort keys to Stable,  =>  {a: 1, b: 2} === {b: 2, a: 1}  
+    if (Object.prototype.toString.call(value) === '[object Object]') {
+      const temp = { ...value };
+      const keys = Object.keys(temp).sort();
+      for (let key of keys) {
+        delete value[key];
+        value[key] = temp[key];
+      }
+    }
+    
     output[i] = $stringify(input[i++], replace, space);
   }
   return '[' + output.join(',') + ']';
